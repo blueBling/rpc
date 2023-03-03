@@ -1,0 +1,37 @@
+syntax = "proto3";
+package IM.BaseDefine;
+option optimize_for = LITE_RUNTIME;
+
+// service id
+enum ServiceID{
+    SID_NULL            = 0x0000;
+    SID_LOGIN           = 0x0001;           // for login
+    SID_MSG             = 0x0002;           //
+    SID_OTHER           = 0x0003;		     
+}
+
+// command id for login
+enum LoginCmdID{
+    CID_NULL             = 0x0000;
+    CID_LOGIN_REQ_REGIST = 0x0101;     // 注册新用户
+    CID_LOGIN_RES_REGIST = 0x0102;	
+}
+
+enum ResultType{
+	REFUSE_REASON_NONE				= 0;
+	REFUSE_REASON_VERSION_TOO_OLD	= 1;
+}
+
+message UserInfo{
+    uint32 user_id = 1;
+    uint32 user_gender = 2; 	//// 用户性别,男：1 女：2 人妖/外星人：0
+    string user_nick_name = 3;	//绰号
+    string avatar_url = 4;
+    uint32 department_id = 5;
+    string email = 6;
+    string user_real_name = 7;	//真名
+    string user_tel = 8;
+    string user_domain = 9;	//用户名拼音
+    uint32 status = 10;        //0:在职  1. 试用期 2. 正式 3. 离职 4.实习,  client端需要对“离职”进行不展示
+    string sign_info = 11;
+}
