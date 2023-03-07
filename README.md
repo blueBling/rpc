@@ -34,7 +34,7 @@ yazi-rpc服务端只支持传递过来的tcp消息解析，我这里扩展了可
 
 ## 4. 高性能引擎
 ![无标题-2023-03-07-1709 excalidraw](https://user-images.githubusercontent.com/31312437/223416825-064c33eb-c42c-463f-8121-fdc90fe1409d.png)
-- TaskDispatcher::init(int threads)创建Singleton<ThreadPool>::instance()，线程池里每个WorkThread创建时会调用Thread的run()，WorkerThread重载了Thread的run,通过信号量通知等待TaskDispatcher送任务过来。
+- TaskDispatcher::init(int threads)创建Singleton\<ThreadPool\>::instance()，线程池里每个WorkThread创建时会调用Thread的run()，WorkerThread重载了Thread的run,通过信号量通知等待TaskDispatcher送任务过来。
 - TaskDispatcher::init(int threads)同时会调用Thread的start开启一个新线程,TaskDispatcher重载了Thread的run，通过信号量通知等待任务队列不空，将任务扔到工作线程池里去。
 SocketHandler的listen会创建epoll开启监听，handle会处理所有的socket IO事件，每个连接都会放入socketpool里，read的数据都会封装成一个Task，扔到任务队列里去。
 
