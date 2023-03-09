@@ -33,8 +33,9 @@ yazi-rpc服务端只支持传递过来的tcp消息解析，我这里扩展了可
 | utility | 日志，ini文本读写，单例等工具函数|
 
 ## 4. 高性能引擎
-![无标题-2023-03-07-1709 excalidraw](https://user-images.githubusercontent.com/31312437/223416825-064c33eb-c42c-463f-8121-fdc90fe1409d.png)
-- TaskDispatcher::init(int threads)创建Singleton\<ThreadPool\>::instance()，线程池里每个WorkThread创建时会调用Thread的run()，WorkerThread重载了Thread的run,通过信号量通知等待TaskDispatcher送任务过来。
-- TaskDispatcher::init(int threads)同时会调用Thread的start开启一个新线程,TaskDispatcher重载了Thread的run，通过信号量通知等待任务队列不空，将任务扔到工作线程池里去。
-SocketHandler的listen会创建epoll开启监听，handle会处理所有的socket IO事件，每个连接都会放入socketpool里，read的数据都会封装成一个Task，扔到任务队列里去。
+![半同步-半反应堆模型](https://user-images.githubusercontent.com/31312437/223939263-4d66c854-9c7c-4bc6-9853-2119f78ff372.png)
+- 这是一个半同步/半反应堆模型。涉及3类线程，IO主线程，任务分发线程，工作线程池
+- epoll监听服务端fd和客户端fd事件，将fd封装成任务，加入任务队列
+- 加入任务队列时，任务分发线程会被唤醒，它继承了Thread,重载了run方法，会不断监听任务队列的情况，有任务时将任务分发到空闲线程，一个fd交给同一个线程处理
+- 任务到来时，工作线程会被唤醒，WorkTask继承了Task,重载了run方法，会执行run里的业务逻辑
 
